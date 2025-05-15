@@ -1,11 +1,23 @@
+'use client'
 import Image from 'next/image'
-import React from 'react'
+import React, { useCallback } from 'react'
 import Button from '../ui/button'
 import { FcGoogle } from "react-icons/fc";
 import { FaGithubAlt } from "react-icons/fa6";
+import useRegisterModal from '@/hooks/useRegisterModal';
+import RegisterModal from '../modals/register-modal';
+
 
 export default function Auth() {
+    const registerModal = useRegisterModal()
+
+    const onOpenRegisterModal = useCallback(()=>{
+        registerModal.onOpen()
+    },[registerModal])
+
   return (
+    <>
+    <RegisterModal/>
     <div className="flex flex-col-reverse items-center justify-center min-h-screen px-6 py-12 space-y-10 md:grid md:grid-cols-2 md:space-y-0 md:gap-10 lg:px-20">
 {/* Image */}
 <div className="flex justify-center ">
@@ -50,7 +62,7 @@ export default function Auth() {
                 <p className="mx-4 text-sm">or</p>
                 <div className="w-1/2 h-px bg-gray-700" />
               </div>
-              <Button label="Create account" fullWidth />
+              <Button label="Create account" fullWidth  onClick={onOpenRegisterModal}/>
               <div className='text-[10px] text-gray-400'>
                 By signing up, you agree to the
                 <span className='text-sky-500'> Terms of service</span> and
@@ -71,5 +83,6 @@ export default function Auth() {
 
 
     </div>
+    </>
   )
 }
