@@ -1,22 +1,40 @@
 'use client'
 import useRegisterModal from '@/hooks/useRegisterModal'
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import Modal from '../ui/modal'
 import { X } from 'lucide-react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { regStep1Schema } from '@/lib/validation'
+import { regStep1Schema, regStep2Schema } from '@/lib/validation'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
+import Button from '../ui/button'
+import { log } from 'util'
+import useLoginModal from '@/hooks/useLoginModal'
 
 export default function RegisterModal() {
     const [step,setStep] = useState(1)
+    const [data,setData] = useState({name:"", email:""})
+
+    const loginModal = useLoginModal()
     const registerModal = useRegisterModal()
 
-    const bodyContent = step === 1 ? <RegisterStep1/> : <RegisterStep2/>
+    const onToggle = useCallback(()=>{
+      registerModal.onClose();
+        loginModal.onOpen()
+    },[loginModal,registerModal])
 
-    const footer = <div>Footer Content</div>
+    const bodyContent = step === 1 ? <RegisterStep1 setData={setData} setStep={setStep}/> : <RegisterStep2/>
+
+    const footer = <div className='mb-4 text-center text-neutral-400'>
+      <p>
+        Already have an account? &nbsp;
+        <span className='text-white cursor-pointer hover:underline' onClick={onToggle}>
+          Sign in
+        </span>
+      </p>
+    </div>
 
     return(
         <Modal
@@ -28,7 +46,11 @@ export default function RegisterModal() {
         totalSteps={2}
         /> )}
 
-function RegisterStep1 () {
+function RegisterStep1 (
+  {setData,setStep}:
+  {setData:Dispatch<SetStateAction<{name:string;email:string}>>;
+  setStep:Dispatch<SetStateAction<number>>
+}) {
     const form = useForm<z.infer<typeof regStep1Schema>>({
         resolver: zodResolver(regStep1Schema),
         defaultValues: {
@@ -37,13 +59,15 @@ function RegisterStep1 () {
          },})
 
       function onSubmit(values: z.infer<typeof regStep1Schema>) {
+        setData(values)
+        setStep(2)
       }
-
       const {isSubmitting} = form.formState
 
  return(
         <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="px-12 space-y-4">
+        <h3 className='font-semibold text-white tetx-3xl'>Create an account</h3>
         <FormField
           control={form.control}
           name="name"
@@ -56,10 +80,81 @@ function RegisterStep1 () {
             </FormItem>
           )}
         />
+         <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+          )}
+        />
+        <Button
+        label="Next"
+        type='submit'
+        secondary
+        fullWidth
+        large
+        disabled={isSubmitting}
+        />
       </form>
     </Form>)
 }
 
 function RegisterStep2 () {
-    return <div>Register step2  </div>
+  const form = useForm<z.infer<typeof regStep2Schema>>({
+    resolver: zodResolver(regStep2Schema),
+    defaultValues: {
+        password:"",
+        username:""
+     },})
+
+  function onSubmit(values: z.infer<typeof regStep2Schema>) {
+    console.log(values);
+
+  }
+  const {isSubmitting} = form.formState
+    return (
+      <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="px-12 space-y-4">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Username" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Password"  type='password' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+          )}
+        />
+        <Button
+        label="Register"
+        type='submit'
+        secondary
+        fullWidth
+        large
+        disabled={isSubmitting}
+        />
+      </form>
+    </Form>)
+
    }

@@ -21,7 +21,7 @@ export default function Modal({body,footer,isOpen,onClose,step,totalSteps}:Modal
         </button>
         {step && totalSteps && (<div className='text-xl font-bold'>Step {step} of {totalSteps} </div>)}
      </div>
-     <div className='mt-4'> {body}</div>
+     <div> {body}</div>
       {footer && <div className='mt-4'>{footer}</div>}
     </DialogContent>
   </Dialog>

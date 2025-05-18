@@ -6,19 +6,28 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithubAlt } from "react-icons/fa6";
 import useRegisterModal from '@/hooks/useRegisterModal';
 import RegisterModal from '../modals/register-modal';
+import useLoginModal from '@/hooks/useLoginModal';
+import LoginModal from '../modals/login-modal';
+
 
 export default function Auth() {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal()
 
   const onOpenRegisterModal = useCallback(() => {
     registerModal.onOpen();
   }, [registerModal]);
 
+  const onOpenloginModal = useCallback(() => {
+    loginModal.onOpen();
+  }, [loginModal]);
+
   return (
     <>
       <RegisterModal />
-      <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12 space-y-10 md:grid md:grid-cols-2 md:space-y-0 md:gap-10 lg:px-20">
+      <LoginModal/>
 
+      <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12 space-y-10 md:grid md:grid-cols-2 md:space-y-0 md:gap-10 lg:px-20">
         {/* Mobile image only */}
         <div className="flex justify-center md:hidden">
           <Image
@@ -94,7 +103,7 @@ export default function Auth() {
               <h3 className="mb-4 text-base font-medium sm:text-lg">
                 Already have an account?
               </h3>
-              <Button label="Sign in" fullWidth outline />
+              <Button label="Sign in" fullWidth outline onClick={onOpenloginModal} />
             </div>
           </div>
         </div>
