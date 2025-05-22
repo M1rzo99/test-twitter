@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
+import { Dialog, DialogContent } from './dialog';
 import { X } from 'lucide-react';
 
 interface ModalProps{

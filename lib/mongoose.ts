@@ -7,11 +7,9 @@ export const connectToDataBase = async ()=>{
     if(!process.env.MONGO_DB_URI){
         return console.error("Mongo_DB_URI in not Defined");
     }
-
     if(isConnected){
         return
     }
-
     try {
         const options:ConnectOptions={
             dbName:"twitter-x",
