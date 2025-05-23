@@ -137,6 +137,7 @@ function RegisterStep1 (
 
 // Register 2 modal
 function RegisterStep2 ({data}: {data:{name:string,email:string}}) {
+  const [error,setError] = useState( '' )
   const RegisterModal = useRegisterModal()
 
   const form = useForm<z.infer<typeof regStep2Schema>>({
@@ -155,8 +156,12 @@ try {
   if(response.success){
     RegisterModal.onClose()
   }
-} catch (error) {
-  console.log(error);
+} catch (error:any) {
+  if(error.response.data.error){
+    setError(error.response.data.error)
+  }else{
+    setError("Somthing went wrong")
+  }
 
 }
 
@@ -165,6 +170,15 @@ try {
     return (
       <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="px-12 space-y-4">
+      {error && (
+         <Alert variant="destructive">
+         <AlertCircle className="w-4 h-4" />
+         <AlertTitle>Error</AlertTitle>
+         <AlertDescription>
+          {error}
+         </AlertDescription>
+       </Alert>
+)}
         <FormField
           control={form.control}
           name="username"
@@ -191,7 +205,7 @@ try {
           )}
         />
         <Button
-        label="Register"
+        label="Login"
         type='submit'
         secondary
         fullWidth
