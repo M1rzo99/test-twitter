@@ -18,6 +18,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
+import { signIn } from 'next-auth/react'
 
 export default function RegisterModal() {
     const [step,setStep] = useState(1)
@@ -154,6 +155,10 @@ try {
 ...values
   })
   if(response.success){
+    signIn("credentials",{
+      email:data.email,
+      password:values.password
+    })
     RegisterModal.onClose()
   }
 } catch (error:any) {

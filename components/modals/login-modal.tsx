@@ -16,6 +16,7 @@ import {
   AlertTitle,
 } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
+import { signIn } from 'next-auth/react'
 
 export default function LoginModal() {
     const [error,setError] = useState("")
@@ -38,6 +39,7 @@ export default function LoginModal() {
       try {
         const {data} = await axios.post("/api/auth/login",values)
         if(data.success){
+          signIn("credentials",values)
           loginModal.onClose()
         }
       } catch (error:any) {
