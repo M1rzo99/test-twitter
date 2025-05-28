@@ -1,6 +1,7 @@
+"use client"
 import React from 'react'
 import { RiLogoutCircleLine } from "react-icons/ri"
-import   {signOut} from "next-auth/react"
+import  {signOut} from "next-auth/react"
 import { IUser } from '@/types'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -37,7 +38,7 @@ const  SidebarAccount = ({user}:Props) =>{
         {user.username ? (
           <p  className='opacity-40'> {user.username}</p>
         ): (
-          <p  className='opacity-40 whitespace-nowrap max-w-[120px] '>Manage account</p>
+          <p  className='opacity-40 whitespace-nowrap max-w-[120px]'>Manage account</p>
         )}
       </div>
          {/* ... nuqtacha hisoblanadi */}
@@ -49,9 +50,12 @@ const  SidebarAccount = ({user}:Props) =>{
     <PopoverContent className='hidden w-full px-0 mb-3 bg-black border-none shadow lg:block rounded-2xl shadow-white'>
   <div
     className='p-4 font-bold text-white transition cursor-pointer hover:bg-slate-300 hover:bg-opacity-10'
-    onClick={() => signOut()}
+    onClick={() => {
+      console.log("Logging out...");
+      signOut();
+    }}
   >
-    Log out: {user.username ? `@${user.username}` : user.name.split(" ")[0]}
+    Log out: {user.username ? `@${user.username}` : user.name.split("", 5)}
   </div>
 </PopoverContent>
 
