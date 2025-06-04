@@ -3,6 +3,8 @@ import { IUser } from "@/types";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Button from "../ui/button";
+import { toast } from "@/hooks/use-toast";
+import axios from "axios";
 
 interface Props{
     placeholder:string;
@@ -13,8 +15,27 @@ const Form =({placeholder,user}:Props)=>{
 const [body,setBody]=useState("")
 const [isLoading,setIsLoading] = useState(false)
 
- const onSubmit = async()=>{}
+ const onSubmit = async()=>{
+        try {
+          setIsLoading(true)
+          const {data} = await axios.post("/api/posts",{body,userId:user._id})
+          console.log(data);
+          setIsLoading(false)
+          setBody("")
+          toast({
+            title:"Success",
+            description:"Post Created Succecssfully"
+          })
 
+
+        } catch (error) {
+          toast({
+            title:"Error",
+            description:"Something went wrong.Try again!",
+            variant:"destructive"
+          })
+          setIsLoading(false)
+        }}
 return(
     <div className="border-b-[1px] border-neutral-800 px-5 py-2">
             <div className="flex flex-row gap-4">

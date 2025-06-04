@@ -23,6 +23,7 @@ export const authOptions: AuthOptions = {
           email: credentials?.email,
         });
 
+
         return user;
       },
     }),
