@@ -14,7 +14,6 @@ interface Props {
 
 const Layout = async ({ children }: Props) => {
   const session:any = await getServerSession(authOptions);
-
   if (!session) {
     return (
       <div className="container h-screen mx-auto max-w-7xl">

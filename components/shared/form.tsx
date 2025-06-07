@@ -1,6 +1,6 @@
 "use client"
-import { IUser } from "@/types";
-import { useState } from "react";
+import { IPost, IUser } from "@/types";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Button from "../ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -9,33 +9,34 @@ import axios from "axios";
 interface Props{
     placeholder:string;
     user:IUser
+    setPosts:Dispatch<SetStateAction<IPost[]>>
 }
 
-const Form =({placeholder,user}:Props)=>{
+const Form =({placeholder,user,setPosts}:Props)=>{
 const [body,setBody]=useState("")
 const [isLoading,setIsLoading] = useState(false)
 
  const onSubmit = async()=>{
         try {
           setIsLoading(true)
-          const {data} = await axios.post("/api/posts",{body,userId:user._id})
-          console.log(data);
+          const {data} = await axios.post("/api/posts",{body,userId: user._id})
+          const newPost = {...data,user}
+          setPosts((prev)=>[newPost,...prev])
           setIsLoading(false)
           setBody("")
           toast({
-            title:"Success",
-            description:"Post Created Succecssfully"
+            title:"Success!",
+            description:"Post created successfully"
           })
-
-
         } catch (error) {
           toast({
-            title:"Error",
+            title:"Error!",
             description:"Something went wrong.Try again!",
             variant:"destructive"
           })
           setIsLoading(false)
         }}
+
 return(
     <div className="border-b-[1px] border-neutral-800 px-5 py-2">
             <div className="flex flex-row gap-4">
