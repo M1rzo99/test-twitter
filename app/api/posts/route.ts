@@ -1,6 +1,8 @@
 import Post from "@/database/post.model"
 import User from "@/database/user.model"
+import { authOptions } from "@/lib/auth-options"
 import { connectToDataBase } from "@/lib/mongoose"
+import { getServerSession } from "next-auth"
 import { NextResponse } from "next/server"
  
 // POST imizni create   qilish un api
@@ -16,11 +18,11 @@ export async function POST(req:Request){
     }
     
 }
-// POST imizni create   qilish un api shu yergacha
-
+// GET orqali, POST qilingan datani olib kelish un
 export async function GET(req:Request){
     try {
         await connectToDataBase()
+        const {currentUser}:any = await getServerSession(authOptions);
         const {searchParams} = new URL(req.url)
         const limit = searchParams.get("limit")
         const posts = await Post.find({})
@@ -31,7 +33,26 @@ export async function GET(req:Request){
         })
         .limit(Number(limit))
         .sort({createdAt: -1})
-        return NextResponse.json(posts)
+        // likelar soni ko'pyib ketganda ishlatamiz bu functionni
+        const filteredPosts = posts.map((post)=>({
+            body: post.body,
+            createdAt: post.createdAt,
+            user:{
+                _id: post.user._id,
+                name: post.user.name,
+                username: post.user.username,
+                profileImage: post.user.profileImage,
+                email: post.user.email
+            },
+            likes: post.likes.length,
+            comments: post.comments.length,
+            hasLiked: post.likes.includes(currentUser._id),
+            _id:post._id
+            
+        }))
+        return NextResponse.json(filteredPosts)
+       
+        
     } catch (error) {
         const result= error as Error
         return NextResponse.json({error:result.message},{status:400})

@@ -19,6 +19,7 @@ interface Props{
 
 const PostItem = ({post,user,setPosts}:Props) => {
   const [isLoading,setIsLoading] = useState(false)
+
   const onDel = async()=>{
     try {
       setIsLoading(true)
@@ -32,6 +33,46 @@ const PostItem = ({post,user,setPosts}:Props) => {
       return toast({
         title:"Error",
         description:"Somthing went wrong, try again!"
+      })
+    }
+  }
+console.log(post);
+
+  const onLike = async ()=>{
+    try {
+       setIsLoading(true)
+       if(post.hasLiked){
+           await axios.delete(`/api/likes`,{
+        data:{
+          postId:post._id,
+          userId:user._id
+        }
+        })
+        const updatePosts = {
+          ...post,
+          hasLiked:false,
+          likes:post.likes -1
+        }
+        setPosts((prev)=> prev.map((p)=>(p._id === post._id ? updatePosts :p)))
+      }else{
+           await axios.put(`/api/likes`,{
+          postId:post._id,
+          userId:user._id
+        })
+        const updatePosts = {
+          ...post,
+          hasLiked:true,
+          likes:post.likes +1
+        }
+        setPosts((prev)=> prev.map((p)=>(p._id === post._id ? updatePosts :p)))
+      }
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+      return toast({
+        title:"Error",
+        description:"Somthing went wrong.Try again later!",
+        variant:"destructive"
       })
     }
   }
@@ -72,17 +113,17 @@ const PostItem = ({post,user,setPosts}:Props) => {
 
       <div className='flex flex-row items-center text-neutral-500 gap-1 cursor-pointer transition hover:text-sky-500'>
         <AiOutlineMessage size={20}/>
-        <p>{post.comments.length || 0}</p>
+        <p>{post.comments || 0}</p>
       </div>
 
-      <div className={`flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500`}>
-        <FaHeart size={20} color={'red'}/>
-        <p>{post.likes.length}</p>
+      <div className={`flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500`} onClick={onLike}>
+        <FaHeart size={20} color={post.hasLiked ? "red" : ""}/>
+        <p>{post.likes || 0}</p>
       </div>
 
       {post.user._id === user._id &&(
-        <div className={`flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500`}>
-          <AiFillDelete size={20} onClick={onDel}/>
+        <div className={`flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500`} onClick={onDel}>
+          <AiFillDelete size={20} />
         </div>
       )}
      </div>

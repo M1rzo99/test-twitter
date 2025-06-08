@@ -1,5 +1,4 @@
 'use client'
-
 import Form from '@/components/shared/form'
 import Header from '@/components/shared/header'
 import PostItem from '@/components/shared/post-item'
@@ -33,7 +32,7 @@ export default function Page() {
 
   return (
     <>
-      <Header label='Home' isBack />
+      <Header label='Home'/>
       {isLoading || status === "loading" ? (
         <div className='flex items-center justify-center h-24'>
           <Loader2 className='animate-spin text-sky-500' />
