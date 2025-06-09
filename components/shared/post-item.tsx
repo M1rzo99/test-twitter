@@ -10,6 +10,8 @@ import { FaHeart } from 'react-icons/fa6';
 import { toast } from '@/hooks/use-toast';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
 
 interface Props{
   post:IPost;
@@ -19,8 +21,10 @@ interface Props{
 
 const PostItem = ({post,user,setPosts}:Props) => {
   const [isLoading,setIsLoading] = useState(false)
+  const router = useRouter()
 
-  const onDel = async()=>{
+  const onDel = async(e:any)=>{
+    e.stopPropagation()
     try {
       setIsLoading(true)
        await axios.delete(`/api/posts`,{
@@ -36,9 +40,9 @@ const PostItem = ({post,user,setPosts}:Props) => {
       })
     }
   }
-console.log(post);
 
-  const onLike = async ()=>{
+  const onLike = async (e:any)=>{
+     e.stopPropagation()
     try {
        setIsLoading(true)
        if(post.hasLiked){
@@ -76,19 +80,24 @@ console.log(post);
       })
     }
   }
+
+    const goToPost=()=>{
+      router.push(`/posts/${post._id}`)
+    }
+
   return (
-    <div className='border-b-[1px] border-neutral-800 relative p-5 cursor-pointer hove:bg-neutral-900 transition'>
+    <div className='border-b-[1px] border-neutral-800 relative p-5 cursor-pointer hove:bg-neutral-900 transition' onClick={goToPost}>
        {isLoading && ( 
        <div className='absolute inset-0 w-full h-full bg-black opacity-50'>
-    <div className='flex justify-center items-center h-full'>
+    <div className='flex justify-center items-center h-full '>
       <Loader2 className='animate-spin text-sky-500'/>
     </div>
       </div>
        )}
     
-            {post.user && (
+     {post.user && (
   <div className='flex flex-col gap-3'>
-    <div className="flex flex-row  items-center gap-2">
+    <div className="flex flex-row  items-center gap-2 cursor-pointer" >
       <Avatar>
       <AvatarImage src={post.user.profileImage} />
       <AvatarFallback>{post.user.name[0]}</AvatarFallback>
