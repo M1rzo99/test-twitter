@@ -1,4 +1,7 @@
 "use client"
+
+import CommentItem from "@/components/shared/comment-item"
+import Form from "@/components/shared/form"
 import Header from "@/components/shared/header"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { sliceText } from "@/lib/utils"
@@ -87,17 +90,25 @@ const Page = ({params}:{params:{postId:string}})=>{
         {formatDistanceToNowStrict(new Date(post.createdAt))} ago
       </span>
     </div>
-    
      <div className='px-4 text-white mt-2'> {post.body}</div>
-
      <div className='px-4 flex flex-row items-center mt-3 gap-10'>
      </div>
   </div>
-  
-)}
-    
+)}  
     </div>
-       
+       <Form placeholder="Post your reply" user={JSON.parse(JSON.stringify(session.currentUser))}
+              setPosts={setComments}
+              postId={params.postId}
+              isComment
+            />
+            {isFetchingComment? (
+              <div className='flex justify-center items-center h-full '>
+      <Loader2 className='animate-spin text-sky-500'/>
+    </div>  ) : (
+                comments.map((comment)=>(
+                  <CommentItem comment={comment} key={comment._id}/>
+                ))
+            )}
          </>
        )}
        </>

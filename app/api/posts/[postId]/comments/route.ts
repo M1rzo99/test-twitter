@@ -1,13 +1,16 @@
 import Comment from "@/database/comment.model"
 import Post from "@/database/post.model"
 import User from "@/database/user.model"
+import { authOptions } from "@/lib/auth-options"
 import { connectToDataBase } from "@/lib/mongoose"
+import { getServerSession } from "next-auth"
 import { NextResponse } from "next/server"
 
 export async function GET(req:Request,route:{params:{postId:string}}){
     try {
         await connectToDataBase()
         const {postId} = route.params
+        const {currentuser}:any = await getServerSession(authOptions)
 
         const post = await Post.findById(postId).populate({
             path:"comments",
@@ -18,7 +21,22 @@ export async function GET(req:Request,route:{params:{postId:string}}){
             model:User
             }
         }).sort({createdAt:-1})
-        return NextResponse.json(post.comments)
+
+        const filteredComments = post.comments.map((item:any)=>({
+            body:item.body,
+            createdAt:item.createdAt,
+            user:{
+                _id:item.user._id,
+                name:item.user.name,
+                username:item.username,
+                profileImage:item.user.profileImage,
+                email:item.user.email
+            },
+            likes:item.likes.length,
+            hasLiked:item.likes.includes(currentuser._id),
+            _id:item._id
+        }))
+        return NextResponse.json(filteredComments)
     } catch (error) {
         const result = error as Error
         return NextResponse.json({error:result.message},{status:400})
