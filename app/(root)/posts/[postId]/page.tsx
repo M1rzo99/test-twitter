@@ -1,12 +1,10 @@
 "use client"
-
 import CommentItem from "@/components/shared/comment-item"
 import Form from "@/components/shared/form"
 import Header from "@/components/shared/header"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { sliceText } from "@/lib/utils"
 import { IPost } from "@/types"
-
 import axios from "axios"
 import { formatDistanceToNowStrict } from "date-fns"
 import { Loader2 } from "lucide-react"
@@ -37,8 +35,10 @@ const Page = ({params}:{params:{postId:string}})=>{
         try {
             setIsLoading(true)
             const {data} = await axios.get(`/api/posts/${params.postId}/comments`)
+             await console.log("data:",data);
             setComments(data)
             setIsLoading(false)
+
         } catch (error) {
             console.log(error);
             setIsLoading(false)
@@ -51,9 +51,11 @@ const Page = ({params}:{params:{postId:string}})=>{
         getComments()
         //eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
+    console.log("Comments:",comments);
+    
 
     return(
-       <>
+       <> 
        <Header label="Posts" isBack/>
        {isLoading || status ===  "loading" ? (
         <div className="flex justify-center items-center h-24">
@@ -61,7 +63,7 @@ const Page = ({params}:{params:{postId:string}})=>{
         </div>
        ) :  (
         <>
-        <div className='border-b-[1px] border-neutral-800 relative p-5 cursor-pointer hove:bg-neutral-900 transition'>
+        <div className='bg-neutral-900  border-b-[1px] border-neutral-800 relative p-5 cursor-pointer  transition'>
        {isLoading && ( 
        <div className='absolute inset-0 w-full h-full bg-black opacity-50'>
     <div className='flex justify-center items-center h-full '>
@@ -71,7 +73,7 @@ const Page = ({params}:{params:{postId:string}})=>{
        )}
     
      {post?.user && (
-  <div className='flex flex-col gap-3'>
+  <div className=' flex flex-col gap-3'>
     <div className="flex flex-row  items-center gap-2 cursor-pointer" >
       <Avatar>
       <AvatarImage src={post.user.profileImage} />
@@ -91,12 +93,11 @@ const Page = ({params}:{params:{postId:string}})=>{
       </span>
     </div>
      <div className='px-4 text-white mt-2'> {post.body}</div>
-     <div className='px-4 flex flex-row items-center mt-3 gap-10'>
-     </div>
+     
   </div>
 )}  
     </div>
-       <Form placeholder="Post your reply" user={JSON.parse(JSON.stringify(session.currentUser))}
+       <Form  placeholder="Post your reply" user={JSON.parse(JSON.stringify(session.currentUser))}
               setPosts={setComments}
               postId={params.postId}
               isComment
@@ -106,7 +107,7 @@ const Page = ({params}:{params:{postId:string}})=>{
       <Loader2 className='animate-spin text-sky-500'/>
     </div>  ) : (
                 comments.map((comment)=>(
-                  <CommentItem comment={comment} key={comment._id}/>
+                  <CommentItem comment={comment} key={comment._id} user={JSON.parse(JSON.stringify(session.currentUser))} comments={comments} setComments={setComments}/>
                 ))
             )}
          </>

@@ -9,16 +9,16 @@ import { NextResponse } from "next/server"
 export async function GET(req:Request,route:{params:{postId:string}}){
     try {
         await connectToDataBase()
-        const {postId} = route.params
-        const {currentuser}:any = await getServerSession(authOptions)
+        const {postId} =  route.params
+        const {currentUser}:any = await getServerSession(authOptions)
 
         const post = await Post.findById(postId).populate({
             path:"comments",
             model:Comment,
             populate:{
+                path:"user",
+            model:User,
             select:"name email profileImage _id username",
-            path:"user",
-            model:User
             }
         }).sort({createdAt:-1})
 
@@ -33,7 +33,7 @@ export async function GET(req:Request,route:{params:{postId:string}}){
                 email:item.user.email
             },
             likes:item.likes.length,
-            hasLiked:item.likes.includes(currentuser._id),
+            hasLiked:item.likes.includes(currentUser._id),
             _id:item._id
         }))
         return NextResponse.json(filteredComments)

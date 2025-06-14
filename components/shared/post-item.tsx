@@ -86,10 +86,10 @@ const PostItem = ({post,user,setPosts}:Props) => {
     }
 
   return (
-    <div className='border-b-[1px] border-neutral-800 relative p-5 cursor-pointer hove:bg-neutral-900 transition' onClick={goToPost}>
+    <div className='border-b-[1px] relative p-5 cursor-pointer hover:bg-neutral-900 transition' onClick={goToPost}>
        {isLoading && ( 
-       <div className='absolute inset-0 w-full h-full bg-black opacity-50'>
-    <div className='flex justify-center items-center h-full '>
+       <div className='absolute inset-0 w-full h-full border-neutral-800 opacity-50'>
+    <div className='flex justify-center items-center h-full border-neutral-800'>
       <Loader2 className='animate-spin text-sky-500'/>
     </div>
       </div>
