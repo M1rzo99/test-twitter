@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
+ export async function PUT(req: Request) {
   try {
     await connectToDataBase();
     const { currentUser }: any = await getServerSession(authOptions);

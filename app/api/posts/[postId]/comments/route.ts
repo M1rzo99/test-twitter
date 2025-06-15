@@ -19,8 +19,9 @@ export async function GET(req:Request,route:{params:{postId:string}}){
                 path:"user",
             model:User,
             select:"name email profileImage _id username",
-            }
-        }).sort({createdAt:-1})
+            },
+            options:{sort:{likes:-1}}
+        })
 
         const filteredComments = post.comments.map((item:any)=>({
             body:item.body,

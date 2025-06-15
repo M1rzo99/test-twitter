@@ -63,10 +63,7 @@ const CommentItem = ({comment,user,setComments,comments}:Props)=>{
     const onDelete= async()=>{
       try {
         setIsLoading(true)
-        await axios.delete(`/api/comments`,{
-          data:{commentId:comment._id}
-        })
-
+        await axios.delete(`/api/comments/${comment._id}`)
         setComments((prev)=>prev.filter((c)=>c._id !==comment._id))
         setIsLoading(false)
       } catch (error) {
