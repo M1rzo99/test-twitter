@@ -6,7 +6,11 @@ const UserSchema = new mongoose.Schema(
     email:String,
     password:String,
     coverImage:String,
-    profileImage:String
+    profileImage:String,
+    bio:String,
+    location:String,
+    following:[{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
+    followers:[{type:mongoose.Schema.Types.ObjectId,ref:"User"}]
 },{timestamps:true}
 )
 

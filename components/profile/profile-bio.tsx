@@ -5,11 +5,24 @@ import { useState } from "react";
 import {IoLocationSharp} from "react-icons/io5"
 import { BiCalendar } from "react-icons/bi";
 import { formatDistanceToNowStrict } from "date-fns";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
 
 const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
     const [isLoading,setIsLoading] = useState(false)
-    const unFollow = ()=>{
+    const router = useRouter()
 
+    const unFollow =async ()=>{
+       try {
+         setIsLoading(true)
+       await axios.put("/api/follows",{userId:user._id})
+        router.refresh()
+        setIsLoading(false)
+       } catch (error) {
+        console.log(error);
+        setIsLoading(false)
+       }
     }
     return (
     <>
