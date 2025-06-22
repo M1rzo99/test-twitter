@@ -22,21 +22,21 @@ export async function PUT(req:Request) {
         return NextResponse.json({error:result.message},{status:400})
     }
 }
-export async function DELETE(req:Request) {
-    try {
-        await connectToDataBase()
-        const {currentUser}:any=await getServerSession(authOptions)
-        const {userId} = await req.json()
+// export async function DELETE(req:Request) {
+//     try {
+//         await connectToDataBase()
+//         const {currentUser}:any=await getServerSession(authOptions)
+//         const {userId} = await req.json()
 
-        await User.findByIdAndUpdate(userId,{
-            $pull:{followers:currentUser._id}
-        })
-        await User.findByIdAndUpdate(currentUser._id,{
-            $pull:{following:userId}
-        })
-        return NextResponse.json({message:"Followed"})
-    } catch (error) {
-        const result = error as Error
-        return NextResponse.json({error:result.message},{status:400})
-    }
-}
+//         await User.findByIdAndUpdate(userId,{
+//             $pull:{followers:currentUser._id}
+//         })
+//         await User.findByIdAndUpdate(currentUser._id,{
+//             $pull:{following:userId}
+//         })
+//         return NextResponse.json({message:"Un Followed"})
+//     } catch (error) {
+//         const result = error as Error
+//         return NextResponse.json({error:result.message},{status:400})
+//     }
+// }

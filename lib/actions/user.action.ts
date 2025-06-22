@@ -17,8 +17,8 @@ export async function  getUserById(userId:string) {
             bio:user.bio,
             location:user.location,
             createdAt:user.createdAt,
-            followers:user.followers?.lenght || 0,
-            following:user.following?.lenght || 0
+            followers:user.followers?.length || 0,
+            following:user.following?.length || 0
         }
         return filteredUser
     } catch (error) {

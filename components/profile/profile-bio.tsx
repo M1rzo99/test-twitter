@@ -1,5 +1,5 @@
 "use client"
-import Button from "@/components/ui/button";
+
 import { IUser } from "@/types"
 import { useState } from "react";
 import {IoLocationSharp} from "react-icons/io5"
@@ -7,13 +7,14 @@ import { BiCalendar } from "react-icons/bi";
 import { formatDistanceToNowStrict } from "date-fns";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Button from "../ui/button";
 
 
 const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
     const [isLoading,setIsLoading] = useState(false)
     const router = useRouter()
 
-    const unFollow =async ()=>{
+    const onFollow =async ()=>{
        try {
          setIsLoading(true)
        await axios.put("/api/follows",{userId:user._id})
@@ -31,7 +32,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
             {userId === user._id ? (
                 <Button label={'Edit profile' } secondary/>
             ):(
-                <Button label={'Follow'} onClick={unFollow}/>
+                <Button label={'Follow'} onClick={onFollow}/>
             )}
         </div>
 
