@@ -1,5 +1,4 @@
 "use client"
-
 import { IUser } from "@/types"
 import { useState } from "react";
 import {IoLocationSharp} from "react-icons/io5"
@@ -9,7 +8,6 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Button from "../ui/button";
 
-
 const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
     const [isLoading,setIsLoading] = useState(false)
     const router = useRouter()
@@ -17,7 +15,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
     const onFollow =async ()=>{
        try {
          setIsLoading(true)
-       await axios.put("/api/follows",{userId:user._id})
+       await axios.put("/api/follows",{userId:user._id,currentUserId:userId})
         router.refresh()
         setIsLoading(false)
        } catch (error) {
@@ -25,13 +23,27 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
         setIsLoading(false)
        }
     }
+
+    const onUnFollow =async()=>{
+       try {
+         setIsLoading(true)
+       await axios.delete("/api/follows",{data:{ userId:user._id,currentUserId:userId}})
+        router.refresh()
+        setIsLoading(false)
+       } catch (error) {
+        console.log(error);
+        setIsLoading(false)
+       }  
+    }
+
+
     return (
     <>
     <div className="border-b-[1px] border-neutral-800 pb-4">
         <div className="flex justify-end p-2">
             {userId === user._id ? (
                 <Button label={'Edit profile' } secondary/>
-            ):(
+            ): user.isFollowing ?(<Button label={'Unfollow'} disabled={isLoading} outline onClick={onUnFollow}/>) : (
                 <Button label={'Follow'} onClick={onFollow}/>
             )}
         </div>
