@@ -7,10 +7,13 @@ import { formatDistanceToNowStrict } from "date-fns";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Button from "../ui/button";
+import EditModal from "../modals/edit-modal";
+import useEditModal from "@/hooks/useEditModal";
 
 const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
     const [isLoading,setIsLoading] = useState(false)
     const router = useRouter()
+    const editModal = useEditModal()
 
     const onFollow =async ()=>{
        try {
@@ -35,14 +38,13 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
         setIsLoading(false)
        }  
     }
-
-
     return (
     <>
+    <EditModal user={user} />
     <div className="border-b-[1px] border-neutral-800 pb-4">
         <div className="flex justify-end p-2">
             {userId === user._id ? (
-                <Button label={'Edit profile' } secondary/>
+                <Button label={'Edit profile' } secondary onClick={editModal.onOpen}/>
             ): user.isFollowing ?(<Button label={'Unfollow'} disabled={isLoading} outline onClick={onUnFollow}/>) : (
                 <Button label={'Follow'} onClick={onFollow}/>
             )}
