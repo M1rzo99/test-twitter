@@ -69,7 +69,7 @@ const ProfileImageUpload = ({profileImage,onChange}:Props) => {
                 src={"/images/placeholder.png"}
                 />
                 <div className='absolute inset-0 flex justify-center  items-center rounded-full bg-white/40'>
-                <IoMdDownload size={40} className={"text-black"}/>
+                <IoMdDownload size={40} className={"text-gray-600"}/>
                 </div>
             </div>
          </div>  

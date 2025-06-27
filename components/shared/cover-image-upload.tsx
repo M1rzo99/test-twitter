@@ -11,7 +11,7 @@ interface Props {
 }
 
 const CoverImageUpload = ({coverImage,onChange}:Props) => {
-    const [image, setImage] = useState("")
+    const [image, setImage] = useState(coverImage)
 
     const handleChange = useCallback(
         (coverImage:string) => {
