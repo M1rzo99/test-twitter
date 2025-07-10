@@ -22,7 +22,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
     const [following,setFollowing] = useState<IUser[]>([])
     const [followers,setFollowers] = useState<IUser[]>([])
     const [isFetching,setIsFetching] = useState(false)
-    const [state, setState] = useState <"following" | "followers">("followers")
+    const [state, setState] = useState <"following" | "followers">("following")
 
     const router = useRouter()
     const editModal = useEditModal()
@@ -39,6 +39,9 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
         setIsLoading(false)
        }
     }
+ const onchangeFollowing = async()=>{
+
+    }
 
     const onUnFollow =async()=>{
        try {
@@ -49,7 +52,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
        } catch (error) {
         console.log(error);
         setIsLoading(false)
-       }  
+       }
     }
 
     const getFollowUsers = async (userId:string,type:string)=>{
@@ -60,7 +63,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
            return data
         } catch (error) {
             console.log(error);
-            
+
         }
     }
 
@@ -71,7 +74,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
             setFollowing(data)
         } catch (error) {
             console.log(error);
-            
+
         }
     }
 
@@ -91,6 +94,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
         }
     }
 
+
     return (
     <>
     <EditModal user={user} />
@@ -103,7 +107,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
             )}
         </div>
 
-        <div className="mt-8 px-4 ">
+        <div className="px-4 mt-8 ">
             <div className="flex flex-col">
                 <p className="text-md text-neutral-500">
                     {user.username ? `@${user.username}`: user.email}
@@ -111,7 +115,7 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
 
                 <div className="flex flex-col mt-4">
                     <p className="text-white">{user.bio}</p>
-                   <div className="flex gap-4 items-center">
+                   <div className="flex items-center gap-4">
                     {user.location && (
                          <div className="flex flex-row items-center gap-2 mt-4 text-sky-500">
                         <IoLocationSharp size={24}/>
@@ -123,13 +127,13 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
                         <p>Joined {formatDistanceToNowStrict(new Date(user.createdAt))} {""} ago</p>
                     </div>
                    </div>
-                   <div className="flex flex-row items-center mt-6 gap-6">
-                    <div className="flex flex-row items-center gap-1 hover:underline cursor-pointer" onClick={OpenFollowModal}> 
+                   <div className="flex flex-row items-center gap-6 mt-6">
+                    <div className="flex flex-row items-center gap-1 cursor-pointer hover:underline" onClick={OpenFollowModal}>
                         <p className="text-white">{user.following}</p>
                         <p className="text-neutral-500">Following</p>
                     </div>
 
-                    <div className="flex flex-row items-center gap-1 hover:underline cursor-pointer"  onClick={OpenFollowModal}> 
+                    <div className="flex flex-row items-center gap-1 cursor-pointer hover:underline"  onClick={OpenFollowModal}>
                         <p className="text-white">{user.followers}</p>
                         <p className="text-neutral-500">Followers</p>
                     </div>
@@ -142,40 +146,39 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
 
                     <Modal  isOpen={Open} onClose={()=>setOpen(false)} body={
                         <>
-                        <div className="flex flex-row w-full py-3 px-4">
-                            
+                        <div className="flex flex-row w-full px-4 py-3">
                             <div className={cn(
                                 "w-[50%] h-full flex justify-center items-center cursor-pointer font-semibold", state === "following" && "border-b-[2px] border-sky-500 text-sky-500"
-                            )}  onClick={onFollowing}> 
-                           
+                            )}  onClick={onFollowing}>
+
                                 Following
                             </div>
-                            
+
                             <div className={cn(
                                 "w-[50%] h-full flex justify-center items-center cursor-pointer font-semibold", state === "followers" && "border-b-[2px] border-sky-500 text-sky-500"
-                            )} onClick={onFollowers}> 
+                            )} onClick={onFollowers}>
                                 Followers
                             </div>
                         </div>
 
                         {isFetching ? (
-                            <div className="flex justify-center items-center h-24">
+                            <div className="flex items-center justify-center h-24">
                                 <Loader2 className="animate-spin text-sky-500"/>
                             </div>
                         ) : (
-                            <div className="space-y-4 flex flex-col">
+                            <div className="flex flex-col space-y-4">
                                { state === "following" ? (
                                 following.length === 0 ? (
-                                    <div className="text-neutral-600 text-center p-6 text-xl">No Following</div>
+                                    <div className="p-6 text-xl text-center text-neutral-600">No Following</div>
                                 ) : (
-                                    following.map((user) => <User key={user._id} user={user} />)
+                                    following.map((user) => <User user={user} key={user._id} isFollow following={following} onchangeFollowing={onchangeFollowing} />)
                                 )
                                ) : (
 
                               followers.length === 0 ? (
-                                    <div className="text-neutral-600 text-center p-6 text-xl">No Followers</div>
+                                    <div className="p-6 text-xl text-center text-neutral-600">No Followers</div>
                                 ) : (
-                                    followers.map((user) => <User key={user._id} user={user} />)
+                                    followers.map((user) => <User key={user._id} user={user} isFollow following={following} onchangeFollowing={onchangeFollowing}  />)
                                 )
                             )}
                             </div>
@@ -184,4 +187,4 @@ const ProfileBio=({user,userId}:{user:IUser; userId:string})=>{
                     }/>
     </>)
 }
-export default ProfileBio 
+export default ProfileBio
